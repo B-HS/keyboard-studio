@@ -88,14 +88,13 @@ const gridKeyboard = parseKle([
 ])
 
 describe('generateKicadPcb document shape', () => {
-    test('parentheses are balanced across every preset with every diode, mount and outline mode', () => {
+    test('parentheses are balanced across every preset with every diode and mount mode', () => {
         for (const preset of KLE_PRESETS) {
             const keyboard = parseKle(preset.raw)
             expect(parensAreBalanced(generateKicadPcb(keyboard, DEFAULT_PCB_OPTIONS))).toBe(true)
             expect(parensAreBalanced(generateKicadPcb(keyboard, withOptions({ switchMount: 'hotswap' })))).toBe(true)
             expect(parensAreBalanced(generateKicadPcb(keyboard, withOptions({ diode: 'sod-123' })))).toBe(true)
             expect(parensAreBalanced(generateKicadPcb(keyboard, withOptions({ switchMount: 'hotswap', diode: 'sod-123' })))).toBe(true)
-            expect(parensAreBalanced(generateKicadPcb(keyboard, withOptions({ includeOutline: true })))).toBe(true)
         }
     })
 
@@ -122,16 +121,10 @@ describe('generateKicadPcb document shape', () => {
         expect(countOccurrences(document, '(footprint "D_DO-35_SOD27_P7.62mm_Horizontal"')).toBe(physicalCount)
     })
 
-    test('omits the Edge.Cuts outline by default', () => {
+    test('never emits an Edge.Cuts outline', () => {
         const document = generateKicadPcb(gridKeyboard, DEFAULT_PCB_OPTIONS)
         expect(document).not.toContain('(gr_rect')
         expect(document).not.toContain('(layer "Edge.Cuts")')
-    })
-
-    test('includes an Edge.Cuts rectangle when the outline is enabled', () => {
-        const document = generateKicadPcb(gridKeyboard, withOptions({ includeOutline: true }))
-        expect(document).toContain('(gr_rect')
-        expect(document).toContain('(layer "Edge.Cuts")')
     })
 
     test('hotswap switch footprints carry the KIPRJMOD switch 3D model with preserved transform', () => {
@@ -296,12 +289,7 @@ describe('generateKicadPcb diode offset', () => {
     })
 })
 
-describe('generateKicadPcb mounting holes and stabilizers', () => {
-    test('mounting holes appear only when enabled', () => {
-        expect(generateKicadPcb(gridKeyboard, DEFAULT_PCB_OPTIONS)).not.toContain('MountingHole_5.4mm_NPTH')
-        expect(generateKicadPcb(gridKeyboard, withOptions({ mountingHoles: true }))).toContain('(footprint "MountingHole_5.4mm_NPTH"')
-    })
-
+describe('generateKicadPcb stabilizers', () => {
     test('stabilizers appear only when enabled', () => {
         const withStabs = generateKicadPcb(parseKle(KLE_PRESETS[0].raw), DEFAULT_PCB_OPTIONS)
         const withoutStabs = generateKicadPcb(parseKle(KLE_PRESETS[0].raw), withOptions({ stabFootprints: false }))

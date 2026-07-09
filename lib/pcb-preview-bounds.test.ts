@@ -17,7 +17,6 @@ import {
     ENCODER_PIN_PAD_DIAMETER_MM,
     ENCODER_SWITCH_PAD_ONE_POSITION_MM,
     ENCODER_SWITCH_PAD_TWO_POSITION_MM,
-    MOUNTING_HOLE_DIAMETER_MM,
     STAB_POST_DIAMETER_MM,
     STAB_WIRE_DIAMETER_MM,
     SWITCH_CENTER_HOLE_DIAMETER_MM,
@@ -43,7 +42,7 @@ const rotatedWorldPoint = (base: { x: number; y: number }, offset: { x: number; 
 
 const primitiveExtents = (keyboard: KleKeyboard, options: PcbOptions) => {
     const layout = computePcbLayout(keyboard, options)
-    const { order, netlist, stabilizers, mountingHoles, board } = layout
+    const { order, netlist, stabilizers, board } = layout
     let minX = Number.POSITIVE_INFINITY
     let minY = Number.POSITIVE_INFINITY
     let maxX = Number.NEGATIVE_INFINITY
@@ -109,7 +108,6 @@ const primitiveExtents = (keyboard: KleKeyboard, options: PcbOptions) => {
     for (const stab of stabilizers) {
         stab.holes.forEach((hole, index) => addCircle(hole.x, hole.y, (index % 2 === 0 ? STAB_POST_DIAMETER_MM : STAB_WIRE_DIAMETER_MM) / 2))
     }
-    for (const hole of mountingHoles) addCircle(hole.x, hole.y, MOUNTING_HOLE_DIAMETER_MM / 2)
     return { minX, minY, maxX, maxY, board }
 }
 
@@ -142,18 +140,16 @@ describe('buildPcbPreview substrate bounds', () => {
     })
 
     test('containment holds across option and rotation combinations', () => {
-        assertContained(ansi60(), withOptions({ mountingHoles: true }))
         assertContained(ansi60(), withOptions({ diode: 'sod-123' }))
         assertContained(ansi60(), withOptions({ switchRotation: 90 }))
-        assertContained(ansi60(), withOptions({ switchRotation: 270, diode: 'sod-123', mountingHoles: true }))
-        assertContained(ansi60(), withOptions({ includeOutline: true, edgeMargin: 4 }))
-        assertContained(ansi60(), withOptions({ diodeOffsetYMm: 12, mountingHoles: true }))
+        assertContained(ansi60(), withOptions({ switchRotation: 270, diode: 'sod-123' }))
+        assertContained(ansi60(), withOptions({ diodeOffsetYMm: 12 }))
     })
 
     test('containment holds for presets and encoder keyboards', () => {
         for (const preset of KLE_PRESETS) assertContained(parseKle(preset.raw), DEFAULT_PCB_OPTIONS)
         assertContained(encoderKeyboard(), DEFAULT_PCB_OPTIONS)
-        assertContained(encoderKeyboard(), withOptions({ switchRotation: 180, mountingHoles: true }))
+        assertContained(encoderKeyboard(), withOptions({ switchRotation: 180 }))
     })
 
     test('viewBox is four numbers enclosing the substrate', () => {

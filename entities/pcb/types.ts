@@ -14,27 +14,21 @@ export type SwitchMount = 'solder' | 'hotswap'
 
 export type PcbOptions = {
     diodesOnBack: boolean
-    includeOutline: boolean
-    edgeMargin: number
     diode: DiodeKind
     switchMount: SwitchMount
     diodeOffsetXMm: number
     diodeOffsetYMm: number
     stabFootprints: boolean
-    mountingHoles: boolean
     switchRotation: 0 | 90 | 180 | 270
 }
 
 export const DEFAULT_PCB_OPTIONS: PcbOptions = {
     diodesOnBack: true,
-    includeOutline: false,
-    edgeMargin: 3,
     diode: 'do-35',
     switchMount: 'solder',
     diodeOffsetXMm: 0,
     diodeOffsetYMm: DIODE_OFFSET_BELOW_SWITCH_MM,
     stabFootprints: true,
-    mountingHoles: false,
     switchRotation: 0,
 }
 

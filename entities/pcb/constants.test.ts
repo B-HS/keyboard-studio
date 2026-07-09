@@ -4,7 +4,6 @@ import {
     DIODE_DO35_HALF_SPAN_MM,
     DIODE_DO35_PAD_DIAMETER_MM,
     DIODE_DO35_PAD_PITCH_MM,
-    MOUNTING_HOLE_DIAMETER_MM,
     STAB_HOLE_BOTTOM_Y_MM,
     STAB_HOLE_TOP_Y_MM,
     STAB_SIZE_TABLE,
@@ -26,11 +25,6 @@ describe('pcb constant relationships', () => {
         expect(STAB_HOLE_TOP_Y_MM).toBeLessThan(0)
         expect(STAB_HOLE_BOTTOM_Y_MM).toBeGreaterThan(0)
         expect(STAB_HOLE_TOP_Y_MM).toBeLessThan(STAB_HOLE_BOTTOM_Y_MM)
-    })
-
-    test('the mounting hole diameter is a positive finite millimetre value', () => {
-        expect(MOUNTING_HOLE_DIAMETER_MM).toBeGreaterThan(0)
-        expect(Number.isFinite(MOUNTING_HOLE_DIAMETER_MM)).toBe(true)
     })
 })
 

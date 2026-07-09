@@ -2,7 +2,6 @@ import { describe, expect, test } from 'vitest'
 import {
     DIODE_DO35_FOOTPRINT,
     ENCODER_EC11_FOOTPRINT,
-    MOUNTING_HOLE_FOOTPRINT,
     SOLDER_SWITCH_FOOTPRINTS,
     STABILIZER_2U_FOOTPRINT,
     SWITCH_FOOTPRINTS,
@@ -67,7 +66,6 @@ describe('fixed component footprints', () => {
     const fixed: [string, string, string][] = [
         ['DO-35 diode', DIODE_DO35_FOOTPRINT, 'D_DO-35_SOD27_P7.62mm_Horizontal'],
         ['EC11 encoder', ENCODER_EC11_FOOTPRINT, 'RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm'],
-        ['mounting hole', MOUNTING_HOLE_FOOTPRINT, 'MountingHole_5.4mm_NPTH'],
         ['2u stabilizer', STABILIZER_2U_FOOTPRINT, 'Stabilizer_Cherry_MX_2.00u'],
         ['wire pad strip', WIRE_PADS_1X12_FOOTPRINT, 'WirePads_1x12_P2.54'],
     ]

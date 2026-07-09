@@ -4,7 +4,6 @@ import { KleKey, KleKeyboard } from '@entities/kle/types'
 import {
     DIODE_DO35_HALF_SPAN_MM,
     DIODE_DO35_PAD_PITCH_MM,
-    MOUNTING_HOLE_INSET_MM,
     STAB_BASE_OFFSET_MM,
     STAB_HOLE_BOTTOM_Y_MM,
     STAB_HOLE_TOP_Y_MM,
@@ -78,18 +77,13 @@ export const computePcbLayout = (keyboard: KleKeyboard, options: PcbOptions) => 
     const order = orderPhysicalKeys(matrix)
     const physicalKeys = order.map((keyIndex) => keyboard.keys[keyIndex])
 
-    const margin = options.includeOutline ? options.edgeMargin : 0
     const bounds = getKeyboardBoundsU(physicalKeys)
-    const contentLeft = bounds.minX * KEY_UNIT_MM - margin
-    const contentTop = bounds.minY * KEY_UNIT_MM - margin
-    const contentRight = bounds.maxX * KEY_UNIT_MM + margin
-    const contentBottom = bounds.maxY * KEY_UNIT_MM + margin
 
     const board = {
-        left: contentLeft,
-        top: contentTop,
-        right: contentRight,
-        bottom: contentBottom,
+        left: bounds.minX * KEY_UNIT_MM,
+        top: bounds.minY * KEY_UNIT_MM,
+        right: bounds.maxX * KEY_UNIT_MM,
+        bottom: bounds.maxY * KEY_UNIT_MM,
     }
 
     const switches = order.map((keyIndex, ordinal) => {
@@ -153,15 +147,6 @@ export const computePcbLayout = (keyboard: KleKeyboard, options: PcbOptions) => 
           })
         : []
 
-    const mountingHoles = options.mountingHoles
-        ? [
-              { x: board.left + MOUNTING_HOLE_INSET_MM, y: board.top + MOUNTING_HOLE_INSET_MM },
-              { x: board.right - MOUNTING_HOLE_INSET_MM, y: board.top + MOUNTING_HOLE_INSET_MM },
-              { x: board.left + MOUNTING_HOLE_INSET_MM, y: board.bottom - MOUNTING_HOLE_INSET_MM },
-              { x: board.right - MOUNTING_HOLE_INSET_MM, y: board.bottom - MOUNTING_HOLE_INSET_MM },
-          ]
-        : []
-
     return {
         matrix,
         netlist,
@@ -171,6 +156,5 @@ export const computePcbLayout = (keyboard: KleKeyboard, options: PcbOptions) => 
         switches,
         diodes,
         stabilizers,
-        mountingHoles,
     }
 }

@@ -18,7 +18,6 @@ import {
     ENCODER_PIN_PAD_DIAMETER_MM,
     ENCODER_SWITCH_PAD_ONE_POSITION_MM,
     ENCODER_SWITCH_PAD_TWO_POSITION_MM,
-    MOUNTING_HOLE_DIAMETER_MM,
     STAB_POST_DIAMETER_MM,
     STAB_WIRE_DIAMETER_MM,
     SWITCH_CENTER_HOLE_DIAMETER_MM,
@@ -90,7 +89,6 @@ const BOARD_CORNER_RADIUS_MM = 3
 
 const SUBSTRATE_FILL = '#0c3b2b'
 const SUBSTRATE_STROKE = '#1c5a44'
-const EDGE_CUTS_STROKE = '#f2c94c'
 const COPPER_FILL = '#c79a4b'
 const COPPER_STROKE = '#e4c67f'
 const DRILL_FILL = '#08130f'
@@ -292,7 +290,6 @@ export const buildPcbPreview = (keyboard: KleKeyboard, options: PcbOptions) => {
     for (const stab of layout.stabilizers) {
         stab.holes.forEach((hole, index) => includeCircle(hole.x, hole.y, (index % 2 === 0 ? STAB_POST_DIAMETER_MM : STAB_WIRE_DIAMETER_MM) / 2))
     }
-    for (const hole of layout.mountingHoles) includeCircle(hole.x, hole.y, MOUNTING_HOLE_DIAMETER_MM / 2)
 
     const substrate = {
         left: minX - SUBSTRATE_PADDING_MM,
@@ -311,14 +308,11 @@ export const buildPcbPreview = (keyboard: KleKeyboard, options: PcbOptions) => {
 
 export const PcbPanel: FC<PcbPanelProps> = ({ keyboard }) => {
     const [diodesOnBack, setDiodesOnBack] = useState(DEFAULT_PCB_OPTIONS.diodesOnBack)
-    const [includeOutline, setIncludeOutline] = useState(DEFAULT_PCB_OPTIONS.includeOutline)
-    const [edgeMargin, setEdgeMargin] = useState(DEFAULT_PCB_OPTIONS.edgeMargin)
     const [diode, setDiode] = useState<DiodeKind>(DEFAULT_PCB_OPTIONS.diode)
     const [switchMount, setSwitchMount] = useState<SwitchMount>(DEFAULT_PCB_OPTIONS.switchMount)
     const [diodeOffsetXMm, setDiodeOffsetXMm] = useState(DEFAULT_PCB_OPTIONS.diodeOffsetXMm)
     const [diodeOffsetYMm, setDiodeOffsetYMm] = useState(DEFAULT_PCB_OPTIONS.diodeOffsetYMm)
     const [stabFootprints, setStabFootprints] = useState(DEFAULT_PCB_OPTIONS.stabFootprints)
-    const [mountingHoles, setMountingHoles] = useState(DEFAULT_PCB_OPTIONS.mountingHoles)
     const [switchRotation, setSwitchRotation] = useState<PcbOptions['switchRotation']>(DEFAULT_PCB_OPTIONS.switchRotation)
     const [includeSwitchModels, setIncludeSwitchModels] = useState(false)
     const [showRatsnest, setShowRatsnest] = useState(true)
@@ -330,20 +324,16 @@ export const PcbPanel: FC<PcbPanelProps> = ({ keyboard }) => {
 
     const options: PcbOptions = {
         diodesOnBack,
-        includeOutline,
-        edgeMargin,
         diode,
         switchMount,
         diodeOffsetXMm,
         diodeOffsetYMm,
         stabFootprints,
-        mountingHoles,
         switchRotation,
     }
     const preview = buildPcbPreview(keyboard, options)
     const { switches, ratsnestSegments, substrate, width, height, viewBox } = preview
     const { matrix, physicalKeys, stabilizers } = preview.layout
-    const mountingHolePositions = preview.layout.mountingHoles
 
     const sourceLabel = matrix.source === 'labels' ? 'from labels' : 'inferred'
 
@@ -420,20 +410,6 @@ export const PcbPanel: FC<PcbPanelProps> = ({ keyboard }) => {
                             stroke={SUBSTRATE_STROKE}
                             strokeWidth={0.4}
                         />
-                        {includeOutline && (
-                            <rect
-                                x={roundCoordinate(substrate.left)}
-                                y={roundCoordinate(substrate.top)}
-                                width={roundCoordinate(width)}
-                                height={roundCoordinate(height)}
-                                rx={BOARD_CORNER_RADIUS_MM}
-                                ry={BOARD_CORNER_RADIUS_MM}
-                                fill='none'
-                                stroke={EDGE_CUTS_STROKE}
-                                strokeWidth={0.3}
-                            />
-                        )}
-
                         {showRatsnest &&
                             ratsnestSegments.map((segment, index) => (
                                 <line
@@ -462,18 +438,6 @@ export const PcbPanel: FC<PcbPanelProps> = ({ keyboard }) => {
                                 />
                             )),
                         )}
-
-                        {mountingHolePositions.map((hole, index) => (
-                            <circle
-                                key={`mount-${index}`}
-                                cx={hole.x}
-                                cy={hole.y}
-                                r={MOUNTING_HOLE_DIAMETER_MM / 2}
-                                fill={DRILL_FILL}
-                                stroke={EDGE_CUTS_STROKE}
-                                strokeWidth={0.15}
-                            />
-                        ))}
 
                         {switches.map((item) => (
                             <g key={item.reference}>
@@ -712,11 +676,6 @@ export const PcbPanel: FC<PcbPanelProps> = ({ keyboard }) => {
                         </div>
 
                         <div className='flex items-center justify-between gap-3'>
-                            <Label htmlFor='pcb-mounting-holes'>Mounting holes</Label>
-                            <Switch id='pcb-mounting-holes' checked={mountingHoles} onCheckedChange={setMountingHoles} />
-                        </div>
-
-                        <div className='flex items-center justify-between gap-3'>
                             <Label htmlFor='pcb-switch-rotation'>Switch rotation</Label>
                             <Select
                                 value={String(switchRotation)}
@@ -732,25 +691,6 @@ export const PcbPanel: FC<PcbPanelProps> = ({ keyboard }) => {
                                     ))}
                                 </SelectContent>
                             </Select>
-                        </div>
-
-                        <div className='flex items-center justify-between gap-3'>
-                            <Label htmlFor='pcb-outline'>Board outline</Label>
-                            <Switch id='pcb-outline' checked={includeOutline} onCheckedChange={setIncludeOutline} />
-                        </div>
-
-                        <div className='flex items-center justify-between gap-3'>
-                            <Label htmlFor='pcb-edge-margin'>Edge margin (mm)</Label>
-                            <Input
-                                id='pcb-edge-margin'
-                                type='number'
-                                min={0}
-                                step={0.5}
-                                value={edgeMargin}
-                                onChange={(event) => setEdgeMargin(Math.max(0, Number(event.target.value) || 0))}
-                                disabled={!includeOutline}
-                                className='w-24'
-                            />
                         </div>
 
                         <div className='flex items-center justify-between gap-3'>

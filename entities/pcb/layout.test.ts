@@ -98,25 +98,9 @@ describe('computePcbLayout stabilizers', () => {
     })
 })
 
-describe('computePcbLayout mounting holes and board bounds', () => {
-    test('emits no mounting holes by default', () => {
-        expect(computePcbLayout(parseKle([['A']]), DEFAULT_PCB_OPTIONS).mountingHoles).toHaveLength(0)
-    })
-
-    test('insets four mounting holes from the board corners when enabled', () => {
-        const layout = computePcbLayout(parseKle([['A']]), withOptions({ mountingHoles: true }))
-        expect(layout.mountingHoles).toEqual([
-            { x: 5, y: 5 },
-            { x: 14.05, y: 5 },
-            { x: 5, y: 14.05 },
-            { x: 14.05, y: 14.05 },
-        ])
-    })
-
-    test('hugs the key bounds with no margin unless the outline is enabled', () => {
+describe('computePcbLayout board bounds', () => {
+    test('hugs the key bounds', () => {
         expect(computePcbLayout(parseKle([['A']]), DEFAULT_PCB_OPTIONS).board).toEqual({ left: 0, top: 0, right: 19.05, bottom: 19.05 })
-        const outlined = computePcbLayout(parseKle([['A']]), withOptions({ includeOutline: true, edgeMargin: 3 })).board
-        expect(outlined).toEqual({ left: -3, top: -3, right: 22.05, bottom: 22.05 })
     })
 })
 

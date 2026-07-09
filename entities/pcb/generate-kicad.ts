@@ -3,7 +3,6 @@ import { DIODE_PAD_HEIGHT_MM, DIODE_PAD_OFFSET_MM, DIODE_PAD_WIDTH_MM, STAB_BASE
 import {
     DIODE_DO35_FOOTPRINT,
     ENCODER_EC11_FOOTPRINT,
-    MOUNTING_HOLE_FOOTPRINT,
     SOLDER_SWITCH_FOOTPRINTS,
     STABILIZER_2U_FOOTPRINT,
     SWITCH_FOOTPRINTS,
@@ -14,7 +13,6 @@ import { PcbOptions, SwitchNetAssignment } from '@entities/pcb/types'
 const KICAD_FILE_VERSION = 20240108
 const KICAD_GENERATOR_VERSION = '8.0'
 const BOARD_THICKNESS_MM = 1.6
-const EDGE_CUTS_STROKE_WIDTH_MM = 0.1
 const SILK_LINE_WIDTH_MM = 0.12
 const SILK_TEXT_SIZE_MM = 1
 const SILK_TEXT_THICKNESS_MM = 0.15
@@ -277,13 +275,10 @@ const buildLayerTable = () =>
         '\t)',
     ].join('\n')
 
-const buildEdgeCuts = (board: { left: number; top: number; right: number; bottom: number }, uuid: string) =>
-    `\t(gr_rect (start ${formatNumber(board.left)} ${formatNumber(board.top)}) (end ${formatNumber(board.right)} ${formatNumber(board.bottom)}) (stroke (width ${formatNumber(EDGE_CUTS_STROKE_WIDTH_MM)}) (type solid)) (fill none) (layer "Edge.Cuts") (uuid "${uuid}"))`
-
 export const generateKicadPcb = (keyboard: KleKeyboard, options: PcbOptions) => {
     const nextUuid = createUuidFactory()
     const layout = computePcbLayout(keyboard, options)
-    const { netlist, board, switches, diodes, stabilizers, mountingHoles } = layout
+    const { netlist, switches, diodes, stabilizers } = layout
     const nets = netlist.nets
     const switchRecord = options.switchMount === 'hotswap' ? SWITCH_FOOTPRINTS : SOLDER_SWITCH_FOOTPRINTS
 
@@ -359,16 +354,6 @@ export const generateKicadPcb = (keyboard: KleKeyboard, options: PcbOptions) => 
         )
     })
 
-    mountingHoles.forEach((hole, index) => {
-        footprintBlocks.push(
-            instantiateFootprint(MOUNTING_HOLE_FOOTPRINT, {
-                at: { x: hole.x, y: hole.y, angle: 0 },
-                reference: `H${index + 1}`,
-                nextUuid,
-            }),
-        )
-    })
-
     return [
         '(kicad_pcb',
         `\t(version ${KICAD_FILE_VERSION})`,
@@ -384,7 +369,6 @@ export const generateKicadPcb = (keyboard: KleKeyboard, options: PcbOptions) => 
         '\t)',
         netDeclarations,
         ...footprintBlocks,
-        ...(options.includeOutline ? [buildEdgeCuts(board, nextUuid())] : []),
         ')',
     ].join('\n')
 }

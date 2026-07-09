@@ -304,7 +304,6 @@ const diodeFootprint = prepareFootprint(path.join(footprintRoot, 'Diode_THT.pret
 const encoderFootprint = prepareFootprint(
     path.join(footprintRoot, 'Rotary_Encoder.pretty', 'RotaryEncoder_Alps_EC11E-Switch_Vertical_H20mm.kicad_mod'),
 )
-const mountingHoleFootprint = prepareFootprint(path.join(footprintRoot, 'MountingHole.pretty', 'MountingHole_5.4mm_NPTH.kicad_mod'))
 const stabilizerFootprint = prepareFootprint(path.join(footprintRoot, 'Mounting_Keyboard_Stabilizer.pretty', 'Stabilizer_Cherry_MX_2.00u.kicad_mod'))
 const wirePadsFootprint = prepareFootprint(path.join(footprintRoot, 'Wire_Pads.pretty', 'WirePads_1x12_P2.54.kicad_mod'))
 
@@ -313,7 +312,6 @@ const output = [
     emitRecord('SOLDER_SWITCH_FOOTPRINTS', solderFootprints),
     emitStringConstant('DIODE_DO35_FOOTPRINT', diodeFootprint),
     emitStringConstant('ENCODER_EC11_FOOTPRINT', encoderFootprint),
-    emitStringConstant('MOUNTING_HOLE_FOOTPRINT', mountingHoleFootprint),
     emitStringConstant('STABILIZER_2U_FOOTPRINT', stabilizerFootprint),
     emitStringConstant('WIRE_PADS_1X12_FOOTPRINT', wirePadsFootprint),
 ].join('\n')

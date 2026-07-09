@@ -30,11 +30,6 @@ describe('kicad export fixtures', () => {
         expect(document).toMatch(/\(at [-0-9.]+ [-0-9.]+ (-?12)\)/)
     })
 
-    test('writes an ansi-60 board with mounting holes', () => {
-        const document = dump('ansi-60-mounting.kicad_pcb', { ...DEFAULT_PCB_OPTIONS, mountingHoles: true })
-        expect(document).toContain('(footprint "MountingHole_5.4mm_NPTH"')
-    })
-
     test('writes a globally switch-rotated ansi-60 board', () => {
         const document = dump('ansi-60-rotated.kicad_pcb', { ...DEFAULT_PCB_OPTIONS, switchRotation: 90 })
         expect(document).toContain('(footprint "SW_Cherry_MX_1.00u_PCB"')

@@ -47,6 +47,3 @@ export const ENCODER_SWITCH_PAD_ONE_POSITION_MM = { x: 14.5, y: 5 }
 export const ENCODER_SWITCH_PAD_TWO_POSITION_MM = { x: 14.5, y: 0 }
 
 export const WIRE_PAD_DRILL_MM = 1.0
-
-export const MOUNTING_HOLE_DIAMETER_MM = 5.4
-export const MOUNTING_HOLE_INSET_MM = 5
