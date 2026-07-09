@@ -163,11 +163,12 @@ const buildRoundedRectangleOutline = (left: number, top: number, right: number, 
 
 const buildOutline = (keys: KleKey[], options: PlateOptions) => {
     const bounds = getKeyboardBoundsU(keys)
-    const grow = options.edgeMargin + options.kerf / 2
-    const left = bounds.minX * KEY_UNIT_MM - grow
-    const top = bounds.minY * KEY_UNIT_MM - grow
-    const right = bounds.maxX * KEY_UNIT_MM + grow
-    const bottom = bounds.maxY * KEY_UNIT_MM + grow
+    const growX = options.edgeMarginX + options.kerf / 2
+    const growY = options.edgeMarginY + options.kerf / 2
+    const left = bounds.minX * KEY_UNIT_MM - growX
+    const top = bounds.minY * KEY_UNIT_MM - growY
+    const right = bounds.maxX * KEY_UNIT_MM + growX
+    const bottom = bounds.maxY * KEY_UNIT_MM + growY
     return { outline: buildRoundedRectangleOutline(left, top, right, bottom, options.cornerRadius), widthMm: right - left, heightMm: bottom - top }
 }
 

@@ -102,16 +102,26 @@ describe('buildPlate outline', () => {
         const keyboard = parseKle(ansi60Raw)
         const bounds = getKeyboardBoundsU(getUsableKeys(keyboard.keys))
         const plate = buildPlate(keyboard.keys, DEFAULT_PLATE_OPTIONS)
-        const margin = DEFAULT_PLATE_OPTIONS.edgeMargin
+        const marginX = DEFAULT_PLATE_OPTIONS.edgeMarginX
+        const marginY = DEFAULT_PLATE_OPTIONS.edgeMarginY
         const xs = plate.outline.map((point) => point.x)
         const ys = plate.outline.map((point) => point.y)
 
-        expect(Math.min(...xs)).toBeCloseTo(bounds.minX * KEY_UNIT_MM - margin, 6)
-        expect(Math.min(...ys)).toBeCloseTo(bounds.minY * KEY_UNIT_MM - margin, 6)
-        expect(Math.max(...xs)).toBeCloseTo(bounds.maxX * KEY_UNIT_MM + margin, 6)
-        expect(Math.max(...ys)).toBeCloseTo(bounds.maxY * KEY_UNIT_MM + margin, 6)
-        expect(plate.widthMm).toBeCloseTo(bounds.width * KEY_UNIT_MM + 2 * margin, 6)
-        expect(plate.heightMm).toBeCloseTo(bounds.height * KEY_UNIT_MM + 2 * margin, 6)
+        expect(Math.min(...xs)).toBeCloseTo(bounds.minX * KEY_UNIT_MM - marginX, 6)
+        expect(Math.min(...ys)).toBeCloseTo(bounds.minY * KEY_UNIT_MM - marginY, 6)
+        expect(Math.max(...xs)).toBeCloseTo(bounds.maxX * KEY_UNIT_MM + marginX, 6)
+        expect(Math.max(...ys)).toBeCloseTo(bounds.maxY * KEY_UNIT_MM + marginY, 6)
+        expect(plate.widthMm).toBeCloseTo(bounds.width * KEY_UNIT_MM + 2 * marginX, 6)
+        expect(plate.heightMm).toBeCloseTo(bounds.height * KEY_UNIT_MM + 2 * marginY, 6)
+    })
+
+    test('applies the horizontal and vertical edge margins independently', () => {
+        const keyboard = parseKle(ansi60Raw)
+        const bounds = getKeyboardBoundsU(getUsableKeys(keyboard.keys))
+        const plate = buildPlate(keyboard.keys, { ...DEFAULT_PLATE_OPTIONS, edgeMarginX: 5, edgeMarginY: 1.5 })
+
+        expect(plate.widthMm).toBeCloseTo(bounds.width * KEY_UNIT_MM + 2 * 5, 6)
+        expect(plate.heightMm).toBeCloseTo(bounds.height * KEY_UNIT_MM + 2 * 1.5, 6)
     })
 })
 

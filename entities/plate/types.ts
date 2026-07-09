@@ -10,7 +10,8 @@ export type PlateOptions = {
     switchCutoutWidth: number | null
     switchCutoutHeight: number | null
     kerf: number
-    edgeMargin: number
+    edgeMarginX: number
+    edgeMarginY: number
     cornerRadius: number
     thickness: number
 }
@@ -21,7 +22,8 @@ export const DEFAULT_PLATE_OPTIONS: PlateOptions = {
     switchCutoutWidth: null,
     switchCutoutHeight: null,
     kerf: 0,
-    edgeMargin: 3,
+    edgeMarginX: 3,
+    edgeMarginY: 3,
     cornerRadius: 3,
     thickness: 1.5,
 }

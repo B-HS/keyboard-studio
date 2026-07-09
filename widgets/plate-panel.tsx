@@ -370,10 +370,17 @@ export const PlatePanel: FC<PlatePanelProps> = ({ keyboard }) => {
                         <SectionHeading>Outline</SectionHeading>
                         <div className='grid grid-cols-2 gap-3'>
                             <NumberField
-                                label='Edge margin'
-                                value={options.edgeMargin}
+                                label='Edge margin X'
+                                value={options.edgeMarginX}
                                 unit='mm'
-                                onCommit={(value) => updateOption('edgeMargin', value)}
+                                onCommit={(value) => updateOption('edgeMarginX', value)}
+                                {...MARGIN_FIELD}
+                            />
+                            <NumberField
+                                label='Edge margin Y'
+                                value={options.edgeMarginY}
+                                unit='mm'
+                                onCommit={(value) => updateOption('edgeMarginY', value)}
                                 {...MARGIN_FIELD}
                             />
                             <NumberField
